@@ -1,0 +1,14 @@
+* Brief
+A vagrant file, and a script, for setting up a debian 11 machine. The
+idea is if the script works with vagrant, then it should be able to
+work on a real machine.
+
+* Usage
+** Vagrant
+Install Vagrant and VirtualBox. Copy the =.env.example= file and
+populate the missing values. Then run =vagrant up=. Might need to run
+this command a couple of times, the first time will install any
+missing vagrant plugins, the second will launch the virtual machine.
+** Debian machine
+Should just be able to run =bootstrap.sh=. Remeber to set up shell
+environment variables (see =.env.example= for hints) before the script.
