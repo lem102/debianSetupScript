@@ -120,6 +120,7 @@ install_apt_packages () {
         fonts-noto-color-emoji \
         xinit \
         firefox-esr \
+        webext-ublock-origin-firefox \
 
     apt build-dep emacs
 }
