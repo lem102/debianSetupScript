@@ -87,6 +87,7 @@ setup_apt () {
 configure_apt () {
     sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list
     microsoft_package_repository
+    docker_package_repository
     apt update
 }
 
@@ -94,6 +95,22 @@ microsoft_package_repository () {
     wget https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
     dpkg -i packages-microsoft-prod.deb
     rm packages-microsoft-prod.deb
+}
+
+docker_package_repository () {
+    apt update
+    apt-get install -y \
+         curl
+    
+    install -m 0755 -d /etc/apt/keyrings
+    curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    chmod a+r /etc/apt/keyrings/docker.gpg
+
+    echo \
+        "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
+  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+        tee /etc/apt/sources.list.d/docker.list > /dev/null
+
 }
 
 install_apt_packages () {
@@ -121,6 +138,11 @@ install_apt_packages () {
         xinit \
         firefox-esr \
         webext-ublock-origin-firefox \
+        docker-ce \
+        docker-ce-cli \
+        containerd.io \
+        docker-buildx-plugin \
+        docker-compose-plugin
 
     apt build-dep emacs
 }
