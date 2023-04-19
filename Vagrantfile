@@ -12,8 +12,6 @@ Vagrant.configure("2") do |config|
 
   config.env.enable
 
-  
-
   config.vm.provision :shell,
                       path: "bootstrap.sh",
                       env: {
@@ -21,7 +19,7 @@ Vagrant.configure("2") do |config|
                         "GITHUB_TOKEN" => ENV["GITHUB_TOKEN"]
                       }
 
-  config.vbguest.auto_update = false
+  config.vbguest.auto_update = true
 
   config.vm.provider "virtualbox" do |vb|
     vb.gui = true
