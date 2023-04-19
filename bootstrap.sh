@@ -50,6 +50,7 @@ clone_emacs_config () {
     GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no" git clone git@github.com:lem102/.emacs.d.git --depth 1
     popd
     su root
+    chown -R $username $home/.emacs.d
 }
 
 refresh_emacs_packages () {

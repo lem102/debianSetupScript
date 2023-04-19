@@ -16,7 +16,8 @@ Vagrant.configure("2") do |config|
                       path: "bootstrap.sh",
                       env: {
                         "PASSWORD" => ENV["PASSWORD"],
-                        "GITHUB_TOKEN" => ENV["GITHUB_TOKEN"]
+                        "GITHUB_TOKEN" => ENV["GITHUB_TOKEN"],
+                        "EMAIL" => ENV["EMAIL"]
                       }
 
   config.vbguest.auto_update = true
