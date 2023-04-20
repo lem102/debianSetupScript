@@ -15,6 +15,33 @@ user () {
     mkdir -p $dev
 }
 
+install_emacs () {
+    apt install -y \
+        build-essential \
+        pkg-config \
+        libgnutls28-dev \
+        libncurses-dev \
+        libx11-dev \
+        libxpm-dev \
+        libjpeg-dev \
+        libpng-dev \
+        libgif-dev \
+        libtiff-dev \
+        libgtk2.0-dev \
+        libjansson4 \
+        libjansson-dev \
+        zlib1g-dev \
+        libgccjit-10-dev \
+        xinit
+
+    apt build-dep -y emacs
+
+    build_emacs
+    clone_emacs_config
+    refresh_emacs_packages
+    setup_exwm
+}
+
 build_emacs () {
     export CC=/usr/bin/gcc-10
     export CXX=/usr/bin/gcc-10
@@ -29,19 +56,6 @@ build_emacs () {
     make -j $(nproc)
     make install
     popd
-}
-
-ssh_key () {
-    su $username
-    mkdir -p $home/.ssh
-    pushd $home/.ssh
-    ssh-keygen -t ed25519 -C "$EMAIL" -N "" -f id_ed25519
-    public_key=$(cat id_ed25519.pub)
-    curl -H "Authorization: token $GITHUB_TOKEN" -u "lem102" --data "{\"title\":\"DebianScript\",\"key\":\"$public_key\"}" https://api.github.com/user/keys
-    popd
-    eval $(ssh-agent -s)
-    ssh-add $home/.ssh/id_ed25519
-    su root
 }
 
 clone_emacs_config () {
@@ -74,34 +88,59 @@ Type=Application" > /usr/share/xsessions/exwm.desktop
 (exwm-config-example)" > $home/.emacs.d/environment.el
 }
 
-setup_dotnet () {
+ssh_key () {
+    su $username
+    mkdir -p $home/.ssh
+    pushd $home/.ssh
+    ssh-keygen -t ed25519 -C "$EMAIL" -N "" -f id_ed25519
+    public_key=$(cat id_ed25519.pub)
+    curl -H "Authorization: token $GITHUB_TOKEN" -u "lem102" --data "{\"title\":\"DebianScript\",\"key\":\"$public_key\"}" https://api.github.com/user/keys
+    popd
+    eval $(ssh-agent -s)
+    ssh-add $home/.ssh/id_ed25519
+    su root
+}
+
+install_dotnet () {
+    setup_microsoft_package_repository
+
+    apt install -y \
+        dotnet-sdk-6.0 \
+        dotnet-sdk-7.0
+
     su $username -c "dotnet tool install --global csharp-ls"
     echo "PATH=\"/home/$username/.dotnet/tools:$PATH\"" | tee -a /etc/environment
 }
 
+setup_microsoft_package_repository () {
+    wget https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+    dpkg -i packages-microsoft-prod.deb
+    rm packages-microsoft-prod.deb
+    apt update
+}
+
 setup_apt () {
     configure_apt
-    install_apt_packages
+    install_general_packages
 }
 
 configure_apt () {
     sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list
-    microsoft_package_repository
-    docker_package_repository
     apt update
 }
 
-microsoft_package_repository () {
-    wget https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-    dpkg -i packages-microsoft-prod.deb
-    rm packages-microsoft-prod.deb
+install_general_packages () {
+    apt install -y \
+        curl \
+        git \
+        fonts-noto-color-emoji
 }
 
-docker_package_repository () {
-    apt update
-    apt-get install -y \
-         curl
-    
+install_docker () {
+    apt install -y \
+        ca-certificates \
+        gnupg
+
     install -m 0755 -d /etc/apt/keyrings
     curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
     chmod a+r /etc/apt/keyrings/docker.gpg
@@ -111,57 +150,32 @@ docker_package_repository () {
   "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
         tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-}
-
-install_apt_packages () {
+    apt update
     apt install -y \
-        build-essential \
-        pkg-config \
-        libgnutls28-dev \
-        libncurses-dev \
-        libx11-dev \
-        libxpm-dev \
-        libjpeg-dev \
-        libpng-dev \
-        libgif-dev \
-        libtiff-dev \
-        libgtk2.0-dev \
-        libjansson4 \
-        libjansson-dev \
-        curl \
-        git \
-        zlib1g-dev \
-        libgccjit-10-dev \
-        dotnet-sdk-6.0 \
-        dotnet-sdk-7.0 \
-        fonts-noto-color-emoji \
-        xinit \
-        firefox-esr \
-        webext-ublock-origin-firefox \
         docker-ce \
         docker-ce-cli \
         containerd.io \
         docker-buildx-plugin \
         docker-compose-plugin
+}
 
-    apt build-dep emacs
+install_firefox () {
+    apt install -y \
+        firefox-esr \
+        webext-ublock-origin-firefox
 }
 
 user
 
 setup_apt
 
-build_emacs
-
-setup_dotnet
-
 ssh_key
 
-clone_emacs_config
+install_docker
 
-refresh_emacs_packages
+install_emacs
 
-setup_exwm
+install_dotnet
 
 chown -R $username $home
 
