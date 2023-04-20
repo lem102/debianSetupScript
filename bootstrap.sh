@@ -177,6 +177,8 @@ install_emacs
 
 install_dotnet
 
+install_firefox
+
 chown -R $username $home
 
 reboot
