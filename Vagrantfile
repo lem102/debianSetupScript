@@ -20,7 +20,7 @@ Vagrant.configure("2") do |config|
                         "EMAIL" => ENV["EMAIL"]
                       }
 
-  config.vbguest.auto_update = true
+  config.vbguest.auto_update = ENV["GUEST_ADDITIONS"] == "true"
 
   config.vm.provider "virtualbox" do |vb|
     vb.gui = true
