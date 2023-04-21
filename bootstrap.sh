@@ -13,6 +13,8 @@ user () {
 
     mkdir -p $bin
     mkdir -p $dev
+
+    timedatectl set-timezone Europe/London
 }
 
 install_emacs () {
@@ -165,9 +167,9 @@ install_firefox () {
         webext-ublock-origin-firefox
 }
 
-user
-
 setup_apt
+
+user
 
 ssh_key
 
