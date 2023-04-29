@@ -149,10 +149,16 @@ install_firefox () {
         webext-ublock-origin-firefox
 }
 
-install_xfce () {
+install_icewm () {
     apt install -y \
-        xfce4 \
-        xfce4-goodies
+        lightdm \
+        icewm
+
+    mkdir $home/.icewm
+    cp -r /usr/share/icewm/* $home/.icewm
+    sed -i "s/key \"Alt+Ctrl+t\"/#&/" $home/.icewm/keys
+    sed -i "s/# KeyWinMenu=\"Alt+Space\"/KeyWinMenu=\"\"/" $home/.icewm/preferences
+    
 }
 
 setup_apt
@@ -169,7 +175,7 @@ install_dotnet
 
 install_firefox
 
-install_xfce
+install_icewm
 
 chown -R $username $home
 
