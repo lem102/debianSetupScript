@@ -41,7 +41,6 @@ install_emacs () {
     build_emacs
     clone_emacs_config
     refresh_emacs_packages
-    setup_exwm
 }
 
 build_emacs () {
@@ -70,24 +69,7 @@ clone_emacs_config () {
 }
 
 refresh_emacs_packages () {
-    su $username -c "emacs -q --batch --eval \"(progn (require 'package) (package-quickstart-refresh) (package-refresh-contents) (package-install 'exwm))\""
-}
-
-setup_exwm () {
-    mkdir -p /usr/share/xsessions
-    echo "[Desktop Entry]
-Name=EXWM
-Exec=emacs
-Type=Application" > /usr/share/xsessions/exwm.desktop
-
-    echo "exec emacs" >> $home/.xinitrc
-
-    echo "xinit -- vt01" >> $home/.profile
-
-    mkdir -p $home/.emacs.d
-    echo "(require 'exwm)
-(require 'exwm-config)
-(exwm-config-example)" > $home/.emacs.d/environment.el
+    su $username -c "emacs -q --batch --eval \"(progn (require 'package) (package-quickstart-refresh))\""
 }
 
 ssh_key () {
@@ -167,6 +149,12 @@ install_firefox () {
         webext-ublock-origin-firefox
 }
 
+install_xfce () {
+    apt install -y \
+        xfce4 \
+        xfce4-goodies
+}
+
 setup_apt
 
 user
@@ -180,6 +168,8 @@ install_emacs
 install_dotnet
 
 install_firefox
+
+install_xfce
 
 chown -R $username $home
 
