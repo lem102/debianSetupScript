@@ -154,13 +154,30 @@ install_icewm () {
         lightdm \
         icewm
 
+    # set keyboard layout
     sed -i "s/XKBLAYOUT=\"us\"/XKBLAYOUT=\"gb\"/" /etc/default/keyboard
 
     mkdir $home/.icewm
     cp -r /usr/share/icewm/* $home/.icewm
+
+    # unbind some keys
     sed -i "s/key \"Alt+Ctrl+t\"/#&/" $home/.icewm/keys
     sed -i "s/# KeyWinMenu=\"Alt+Space\"/KeyWinMenu=\"\"/" $home/.icewm/preferences
-    
+
+    # hide stuff on taskbar
+    sed -i "s/# TaskBarShowWorkspaces=1/TaskBarShowWorkspaces=0/" $home/.icewm/preferences
+    sed -i "s/# TaskBarShowWindowListMenu=1/TaskBarShowWindowListMenu=0/" $home/.icewm/preferences
+    sed -i "s/# TaskBarShowShowDesktopButton=1/TaskBarShowShowDesktopButton=0/" $home/.icewm/preferences
+
+    # date and time
+    sed -i "s/# TimeFormat=\"%X\"/TimeFormat=\"%A %d %B %H:%M\"/" $home/.icewm/preferences
+
+    # wallpaper
+    wget "https://s1.1zoom.me/b5050/782/305258-svetik_1920x1080.jpg" -O $home/wallpaper.jpg
+    echo "DesktopBackgroundImage=$home/wallpaper.jpg" >> $home/.icewm/prefoverride
+
+    # set theme
+    echo 'Theme="Win95"' >> $home/.icewm/preferences
 }
 
 setup_apt
