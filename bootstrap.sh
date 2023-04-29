@@ -154,6 +154,8 @@ install_icewm () {
         lightdm \
         icewm
 
+    sed -i "s/XKBLAYOUT=\"us\"/XKBLAYOUT=\"gb\"/" /etc/default/keyboard
+
     mkdir $home/.icewm
     cp -r /usr/share/icewm/* $home/.icewm
     sed -i "s/key \"Alt+Ctrl+t\"/#&/" $home/.icewm/keys
