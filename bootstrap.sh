@@ -185,6 +185,19 @@ install_icewm () {
         pavucontrol
 }
 
+install_nodejs () {
+    su $username
+    git clone https://github.com/nvm-sh/nvm.git $home/.nvm
+    cd $home/.nvm
+    git checkout v0.39.3
+
+    echo 'export NVM_DIR="$HOME/.nvm"' >> $home/.bashrc
+    echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm' >> $home/.bashrc
+    echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion' >> $home/.bashrc
+
+    su root
+}
+
 setup_apt
 
 user
@@ -198,6 +211,8 @@ install_emacs
 install_dotnet
 
 install_firefox
+
+install_nodejs
 
 install_icewm
 
