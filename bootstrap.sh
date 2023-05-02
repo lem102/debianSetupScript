@@ -178,6 +178,11 @@ install_icewm () {
 
     # set theme
     echo 'Theme="Win95"' >> $home/.icewm/preferences
+
+    # audio
+    apt install -y \
+        pulseaudio \
+        pavucontrol
 }
 
 setup_apt
