@@ -157,6 +157,9 @@ install_icewm () {
     # set keyboard layout
     sed -i "s/XKBLAYOUT=\"us\"/XKBLAYOUT=\"gb\"/" /etc/default/keyboard
 
+    # add srvukeys:none to XKBOPTIONS, disabling ctrl alt function keybindings to switch tty
+    sed -i "s/XKBOPTIONS=\"ctrl:nocaps,terminate:ctrl_alt_bksp\"/XKBOPTIONS=\"ctrl:nocaps,terminate:ctrl_alt_bksp,srvrkeys:none\"/" /etc/default/keyboard
+
     mkdir $home/.icewm
     cp -r /usr/share/icewm/* $home/.icewm
 
