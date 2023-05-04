@@ -19,7 +19,6 @@ user () {
 
 install_emacs () {
     apt install -y \
-        build-essential \
         pkg-config \
         libgnutls28-dev \
         libncurses-dev \
@@ -115,6 +114,7 @@ configure_apt () {
 
 install_general_packages () {
     apt install -y \
+        build-essential \
         curl \
         git \
         fonts-noto-color-emoji
@@ -201,6 +201,20 @@ install_nodejs () {
     su root
 }
 
+install_jumpapp () {
+    apt install -y \
+        debhelper \
+        pandoc \
+        shunit2 \
+        wmctrl
+
+    git clone https://github.com/mkropat/jumpapp.git
+    pushd jumpapp
+    make deb
+    sudo dpkg -i jumpapp*all.deb
+    popd
+}
+
 setup_apt
 
 user
@@ -218,6 +232,8 @@ install_firefox
 install_nodejs
 
 install_icewm
+
+install_jumpapp
 
 chown -R $username $home
 
