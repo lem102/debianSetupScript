@@ -149,6 +149,14 @@ install_firefox () {
         webext-ublock-origin-firefox
 }
 
+install_google_chrome () {
+    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+    apt install -y ./google-chrome-stable_current_amd64.deb
+    rm google-chrome-stable_current_amd64.deb
+
+    # TODO: figure out how to auto install adblock extension
+}
+
 install_icewm () {
     apt install -y \
         lightdm \
@@ -166,6 +174,12 @@ install_icewm () {
     # unbind some keys
     sed -i "s/key \"Alt+Ctrl+t\"/#&/" $home/.icewm/keys
     sed -i "s/# KeyWinMenu=\"Alt+Space\"/KeyWinMenu=\"\"/" $home/.icewm/preferences
+
+    # bind some keys
+    echo 'key "Alt+Ctrl+F9" jumpapp emacs' >> $home/.icewm/keys
+    echo 'key "Alt+Ctrl+F10" jumpapp google-chrome' >> $home/.icewm/keys
+    echo 'key "Alt+Ctrl+F11" jumpapp slack' >> $home/.icewm/keys
+    echo 'key "Super+z" /bin/sh -c "maim -s | xclip -selection clipboard -t image/png"' >> $home/.icewm/keys
 
     # hide stuff on taskbar
     sed -i "s/# TaskBarShowWorkspaces=1/TaskBarShowWorkspaces=0/" $home/.icewm/preferences
@@ -215,6 +229,12 @@ install_jumpapp () {
     popd
 }
 
+setup_screenshots () {
+    apt install -y \
+        maim \
+        xclip
+}
+
 setup_apt
 
 user
@@ -227,13 +247,15 @@ install_emacs
 
 install_dotnet
 
-install_firefox
+install_google_chrome
 
 install_nodejs
 
 install_icewm
 
 install_jumpapp
+
+setup_screenshots
 
 chown -R $username $home
 
