@@ -235,6 +235,11 @@ setup_screenshots () {
         xclip
 }
 
+install_slack () {
+    wget https://downloads.slack-edge.com/releases/linux/4.31.155/prod/x64/slack-desktop-4.31.155-amd64.deb
+    apt install -y ./slack-desktop-4.31.155-amd64.deb
+}
+
 setup_apt
 
 user
@@ -256,6 +261,8 @@ install_icewm
 install_jumpapp
 
 setup_screenshots
+
+install_slack
 
 chown -R $username $home
 
