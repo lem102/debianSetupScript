@@ -117,13 +117,13 @@ install_general_packages () {
         build-essential \
         curl \
         git \
-        fonts-noto-color-emoji
+        fonts-noto-color-emoji \
+        gnupg
 }
 
 install_docker () {
     apt install -y \
-        ca-certificates \
-        gnupg
+        ca-certificates
 
     install -m 0755 -d /etc/apt/keyrings
     curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
@@ -240,6 +240,19 @@ install_slack () {
     apt install -y ./slack-desktop-4.31.155-amd64.deb
 }
 
+install_vscode () {
+    apt install -y \
+        apt-transport-https
+    
+    wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+    install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
+    sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'
+    rm -f packages.microsoft.gpg
+    
+    apt update
+    apt install -y code
+}
+
 setup_apt
 
 user
@@ -263,6 +276,8 @@ install_jumpapp
 setup_screenshots
 
 install_slack
+
+install_vscode
 
 chown -R $username $home
 
